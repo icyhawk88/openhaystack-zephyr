@@ -3,7 +3,8 @@ OpenHaystack Zephyr firmware
 
 This project implements firmware with an `OpenHaystack <https://github.com/seemoo-lab/openhaystack>`_ application based on the real-time operating system `Zephyr <https://www.zephyrproject.org/>`_.
 
-OpenHaystack is a framework for tracking personal Bluetooth devices via Apple's massive `Find My <https://developer.apple.com/find-my/>`_ network. Thanks to this firmware based on Zephyr, you can create your own tracking tags with one of the many Bluetooth Low Energy devices that Zephyr supports.
+OpenHaystack is a framework for tracking personal Bluetooth devices via Apple's massive `Find My <https://developer.apple.com/find-my/>`_ network. Thanks to this firmware based on Zephyr, you can create your own tracking tags with one of the many Bluetooth Low Energy devices that Zephyr supports.  
+
 
 After flashing the firmware to your device, it sends out Bluetooth Low Energy advertisements that will be visible in Apple's Find My network using the OpenHaystack application in macOS.
 
