@@ -26,7 +26,7 @@ jobs:
       - name: Build firmware
         working-directory: openhaystack-zephyr
         run: |
-          west build -b nrf52840dongle_nrf52840 -s app
+          west build -b bbc_microbit_v2 -s app
       - name: Archive firmware
         uses: actions/upload-artifact@v2
         with:
