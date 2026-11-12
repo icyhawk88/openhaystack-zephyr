@@ -22,7 +22,7 @@
 #endif
 
 // Don't make `const`, so we can replace the key in the compiled bin file
-static char public_key[28] = "OFFLINEFINDINGPUBLICKEYHERE!";
+static char public_key[28] = "ef3a522e8511f4672c2ce43ef91f86d014cc0a2ac50e2e18507a7d5e";
 
 static bt_addr_le_t device_address = { BT_ADDR_LE_RANDOM,
 				       { 0xFF, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF } };
