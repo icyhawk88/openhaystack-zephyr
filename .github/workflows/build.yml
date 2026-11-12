@@ -5,7 +5,7 @@ on: workflow_dispatch
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: zephyrprojectrtos/ci:l
+    container: zephyrprojectrtos/ci:v0.13-branch
     
     steps:
       - name: Checkout
