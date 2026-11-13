@@ -1,0 +1,68 @@
+name: Build micro:bit v2 firmware
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          path: openhaystack-zephyr
+
+      - name: Install host dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends \
+            ccache cmake device-tree-compiler dfu-util file g++-multilib \
+            gcc-multilib libsdl2-dev make ninja-build python3-pip python3-setuptools \
+            python3-venv xz-utils
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.8'
+
+      - name: Install west
+        run: python -m pip install --upgrade west
+
+      - name: Initialize west workspace and fetch Zephyr
+        run: |
+          west init -l openhaystack-zephyr
+          west update
+          west zephyr-export
+          python -m pip install --upgrade -r zephyr/scripts/requirements.txt
+
+      - name: Install Zephyr SDK
+        run: |
+          SDK_VERSION=0.16.5
+          SDK_ARCHIVE="zephyr-sdk-${SDK_VERSION}_linux-x86_64.tar.xz"
+          curl --fail --location --retry 3 \
+            "https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${SDK_VERSION}/${SDK_ARCHIVE}" \
+            --output "${SDK_ARCHIVE}"
+          sudo mkdir -p /opt/zephyr-sdk
+          sudo tar -xJf "${SDK_ARCHIVE}" -C /opt/zephyr-sdk
+          sudo mv "/opt/zephyr-sdk/zephyr-sdk-${SDK_VERSION}" /opt/zephyr-sdk/current
+          cd /opt/zephyr-sdk/current
+          sudo ./setup.sh -t arm-zephyr-eabi -h -c
+          echo "ZEPHYR_SDK_INSTALL_DIR=/opt/zephyr-sdk/current" >> "$GITHUB_ENV"
+          echo "ZEPHYR_TOOLCHAIN_VARIANT=zephyr" >> "$GITHUB_ENV"
+
+      - name: Build for BBC micro:bit v2
+        run: west build -p always -b bbc_microbit_v2 -s openhaystack-zephyr/app
+
+      - name: Upload firmware artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: microbit-v2-firmware
+          path: |
+            build/zephyr/zephyr.bin
+            build/zephyr/zephyr.hex
+          if-no-files-found: error
